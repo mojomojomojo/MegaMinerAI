@@ -26,6 +26,7 @@ clean:
 	rm -f $(objects) client libclient_network.o libclient_game.o libclient_getters.o libclient_util.o libclient.so
 	$(MAKE) -C sexp clean
 
+client:LDLIBS+=-lm
 client: $(objects) sexp/sexp.a
 	$(CXX) $(LDFLAGS) $(LOADLIBES) $(LDLIBS) $^ -g -o client
 
