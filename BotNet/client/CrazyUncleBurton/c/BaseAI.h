@@ -38,12 +38,17 @@ public:
   int baseCost();
   ///Scalar used in the virus price formula
   float scaleCost();
+  ///The cost of a virus at a given level. (TWH)
+  int virusCost( int level = 0 );
   ///The width of the map (max X value)
   int width();
   ///The height of the map (max Y value)
   int height();
   ///Gets the tile at the specified location
   Tile& getTileAtLocation(int x, int y);
+
+  ///The total number of bases that can spawn this turn.
+  int spawnsLeft();
   
   BaseAI(Connection* c);
   virtual ~BaseAI();

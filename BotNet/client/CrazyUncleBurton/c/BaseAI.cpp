@@ -4,6 +4,7 @@
 
 #include "BaseAI.h"
 #include "game.h"
+#include <math.h>
 
 int BaseAI::turnNumber()
 {
@@ -25,6 +26,24 @@ float BaseAI::scaleCost()
 {
   return getScaleCost(c);
 }
+//// TWH
+int BaseAI::virusCost( int level ) {
+  (int)(baseCost() + powf(scaleCost(),level));
+}
+int BaseAI::spawnsLeft() {
+  int remain = 0;
+  for (std::vector<Base>::iterator base = bases.begin();
+       base != bases.end();
+       base++) {
+    if ((*base).owner() == playerID()) {
+      remain += (*base).spawnsLeft();
+    }
+  }
+  return remain;
+}
+//// TWH
+
+
 int BaseAI::width()
 {
   return getWidth(c);
