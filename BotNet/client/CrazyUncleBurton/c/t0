@@ -1,0 +1,1 @@
+testrun 2>&1 | tee test0.log
