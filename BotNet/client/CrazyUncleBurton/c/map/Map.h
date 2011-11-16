@@ -1,5 +1,5 @@
-#ifndef MAPH_H
-#define MAPH_H
+#ifndef __MAP_H__
+#define __MAP_H__
 
 #include<stdint.h>
 #include<iostream>
@@ -46,4 +46,4 @@ class Map
 //	void init();
 };
 
-#endif
+#endif // __MAP_H__

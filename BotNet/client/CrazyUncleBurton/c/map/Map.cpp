@@ -1,4 +1,4 @@
-#include "MapH.h"
+#include "Map.h"
 
 Map::Map(const signed short x, const signed short y, AI* parent) : m_width(x), m_height(y), m_parent(parent)
 {
