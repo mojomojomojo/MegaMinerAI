@@ -2,7 +2,7 @@ sources = $(wildcard *.cpp)
 headers = $(wildcard *.h)
 objects = $(sources:%.cpp=%.o)
 deps = $(sources:%.cpp=%.d)
-CFLAGS += -g
+CFLAGS += -g -D_DEBUG_OFFICER
 CXXFLAGS += -g
 
 #Uncomment this line  to get a boatload of debug output.
@@ -37,3 +37,15 @@ sexp/sexp.a sexp/libclient_sexp.a:
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
 -include $(deps)
+
+AI.o:CPPFLAGS+=-D_DEBUG_OFFICER
+AI.o: Officer.o RandomOfficer.o
+
+Officer.o:CPPFLAGS+=-D_DEBUG_OFFICER
+
+RandomOfficer.o:CPPFLAGS+=-D_DEBUG_OFFICER
+
+LemmingOfficer.o:CPPFLAGS+=-D_DEBUG_OFFICER
+
+ofc:
+	$(MAKE) -C officers copy

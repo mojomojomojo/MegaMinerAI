@@ -2,7 +2,7 @@
 #define __PATH_HPP__
 
 #include <stdint.h>
-#include "MapH.h"
+#include "Map.h"
 #include "Point.h"
 
 #include <iostream>

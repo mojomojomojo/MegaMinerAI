@@ -44,10 +44,16 @@ int Base::spawn(int Level)
 
 std::ostream& operator<<(std::ostream& stream,Base ob)
 {
-  stream << "id: " << ((_Base*)ob.ptr)->id  <<'\n';
-  stream << "x: " << ((_Base*)ob.ptr)->x  <<'\n';
-  stream << "y: " << ((_Base*)ob.ptr)->y  <<'\n';
-  stream << "owner: " << ((_Base*)ob.ptr)->owner  <<'\n';
-  stream << "spawnsLeft: " << ((_Base*)ob.ptr)->spawnsLeft  <<'\n';
+  stream << "[Base ID("<<((_Base*)ob.ptr)->id<<")"
+         << " (" << ((_Base*)ob.ptr)->x << "," << ((_Base*)ob.ptr)->y << ")"
+         << " Owner(" << ((_Base*)ob.ptr)->owner << ")"
+         << " SpawnsLeft(" << ((_Base*)ob.ptr)->spawnsLeft << ")"
+         << "]";
+
+  // stream << "id: " << ((_Base*)ob.ptr)->id  <<'\n';
+  // stream << "x: " << ((_Base*)ob.ptr)->x  <<'\n';
+  // stream << "y: " << ((_Base*)ob.ptr)->y  <<'\n';
+  // stream << "owner: " << ((_Base*)ob.ptr)->owner  <<'\n';
+  // stream << "spawnsLeft: " << ((_Base*)ob.ptr)->spawnsLeft  <<'\n';
   return stream;
 }

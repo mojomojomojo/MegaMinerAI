@@ -1,4 +1,5 @@
-#include "MapH.h"
+#include "Map.h"
+#include "AI.h"
 
 Cluster::Cluster(MAPCODE mapcode) : m_type(mapcode), m_size(0), m_virusCount(0)
 {

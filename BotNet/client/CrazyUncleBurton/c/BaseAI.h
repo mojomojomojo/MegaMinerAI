@@ -14,6 +14,9 @@
 #include "Tile.h"
 #include "Virus.h"
 
+#include "Map.h"
+
+
 /// \brief A basic AI interface.
 
 ///This class implements most the code an AI would need to interface with the lower-level game code.
@@ -27,6 +30,11 @@ public:
   std::vector<Player> players;
   std::vector<Tile> tiles;
   std::vector<Virus> viruses;
+
+  Map map;
+  std::vector<Virus> myViruses;
+  std::vector<Base> myBases;
+
 public:
   ///How many turns it has been since the beginning of the game
   int turnNumber();
@@ -49,6 +57,9 @@ public:
 
   ///The total number of bases that can spawn this turn.
   int spawnsLeft();
+  bool canAffordVirus( int level = 0 );
+  Virus* locateVirus( int virusID );
+  Virus* locateVirusAtBase( int baseID );
   
   BaseAI(Connection* c);
   virtual ~BaseAI();

@@ -1,7 +1,9 @@
 #include "AI.h"
 #include "util.h"
 
-#include "TheGeneral.h"
+#include "Officer.h"
+#include "RandomOfficer.h"
+#include "LemmingOfficer.h"
 #include "shell.h"
 #include "rrbase.h"
 
@@ -17,21 +19,70 @@ const char* AI::password()
   return "aegoaf5Y";
 }
 
-vector<TheGeneral> leadership;
+Officer Commander_Washington;
+RandomOfficer LtRand;
+LemmingOfficer ColRight,ColUp;
 
 //This function is run once, before your first turn.
 void AI::init(){
+  cout << "AI Started" << endl;
+  cout << "Base Cost: " << baseCost() << ", Scale: " << scaleCost() << endl;
+
   // run-time configuration is required here.
+  Commander_Washington.LogLevel(10);
+  Commander_Washington.init(this);
+  Commander_Washington.setOfficerName("Gen.Wash");
+  Commander_Washington.PressRelease("Good afternoon, gentlemen.");
+
+  ColRight.LogLevel(10);
+  ColRight.marchDir(East);
+  ColRight.unitsWanted(2);
+  ColRight.minLevel(1);
+  ColRight.setOfficerName(string("Col.Right"));
+  Commander_Washington.addSubordinate(&ColRight);
+  ColRight.PressRelease("Col. Right, reporting for duty.");
+
+  ColUp.LogLevel(10);
+  ColUp.marchDir(North);
+  ColUp.unitsWanted(2);
+  ColUp.minLevel(0);
+  ColUp.setOfficerName(string("Col.Up"));
+  Commander_Washington.addSubordinate(&ColUp);
+  ColUp.PressRelease("Col. Up, reporting for duty.");
+
+  LtRand.LogLevel(10);
+  LtRand.unitsWanted(0x7FFF); // the rest of the troops
+  LtRand.minLevel(0);
+  LtRand.setOfficerName("Lt.Rand");
+  Commander_Washington.addSubordinate(&LtRand);
+  LtRand.PressRelease("Lt. Random, reporting for duty.");
 }
 
 //This function is called each time it is your turn.
 //Return true to end your turn, return false to ask the server for updated information.
 bool AI::run()
 {
-  Map map(this);
+  players[playerID()].talk((char*)"The General: 0.51 (2xLem,1Rand)");
+
+  // Future: tell the map to update itself (saving history)
+  map = Map(this);
+
+  // Update convenience data structures.
+  myBases.erase(myBases.begin(),myBases.end());
+  for (vector<Base>::iterator base = bases.begin();
+       base != bases.end();
+       base++) {
+    if ((*base).owner() == playerID()) myBases.push_back(*base);
+  }
+  myViruses.erase(myViruses.begin(),myViruses.end());
+  for (vector<Virus>::iterator virus = viruses.begin();
+       virus != viruses.end();
+       virus++) {
+    if ((*virus).owner() == playerID()) myViruses.push_back(*virus);
+  }
 
   // Let the General command the army.
-  Command(this,map);
+  Commander_Washington.Command();
 
   // The Old Way
   // // virus coverage strategy

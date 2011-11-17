@@ -28,7 +28,7 @@ float BaseAI::scaleCost()
 }
 //// TWH
 int BaseAI::virusCost( int level ) {
-  (int)(baseCost() + powf(scaleCost(),level));
+  return (int)(baseCost() * powf(scaleCost(),level));
 }
 int BaseAI::spawnsLeft() {
   int remain = 0;
@@ -41,6 +41,39 @@ int BaseAI::spawnsLeft() {
   }
   return remain;
 }
+
+bool BaseAI::canAffordVirus( int level ) {
+  return players[playerID()].cycles() >= virusCost(level);
+}
+
+Virus* BaseAI::locateVirus( int virusID ) {
+  for (vector<Virus>::iterator v = viruses.begin();
+       v != viruses.end();
+       v++) {
+    if ((*v).id() == virusID) {
+      return &(*v);
+    }
+  }
+  return NULL;
+}
+Virus* BaseAI::locateVirusAtBase( int baseID ) {
+  // Find the base.
+  for (vector<Base>::iterator b = bases.begin();
+       b != bases.end();
+       b++) {
+    if ((*b).id() == baseID) {
+      for (vector<Virus>::iterator v = viruses.begin();
+           v != viruses.end();
+           v++) {
+        if ((*v).x() == (*b).x() && (*v).y() == (*b).y()) {
+          return &(*v);
+        }
+      }
+    }
+  }
+  return NULL;
+}
+
 //// TWH
 
 

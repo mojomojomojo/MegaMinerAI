@@ -1,5 +1,5 @@
-#ifndef MAPH_H
-#define MAPH_H
+#ifndef __MAP_H__
+#define __MAP_H__
 
 #include<stdint.h>
 #include<iostream>
@@ -7,7 +7,7 @@
 #include<vector>
 #include<list>
 #include<ctime>
-#include "AI.h"
+//#include "AI.h"
 #include "config.h"
 #include "Point.h"
 #include "EnumsH.h"
@@ -16,7 +16,6 @@
 
 class AI;
 class Point;
-
 class Cluster;
 
 class Map
@@ -65,4 +64,4 @@ public:
 std::ostream& operator<<(std::ostream& out, Map& map);
 std::ostream& operator<<(std::ostream& out, Cluster& cluster);
 
-#endif
+#endif // __MAP_H__

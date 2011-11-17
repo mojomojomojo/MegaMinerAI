@@ -3,8 +3,6 @@
 
 #include "BaseAI.h"
 
-#include "Map.h"
-
 ///The class implementing gameplay logic.
 class AI: public BaseAI
 {
@@ -15,8 +13,6 @@ public:
   virtual void init();
   virtual bool run();
   virtual void end();
-
-  Map map;
 };
 
 #endif

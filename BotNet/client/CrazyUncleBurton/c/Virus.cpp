@@ -54,12 +54,14 @@ int Virus::move(int x, int y)
 
 std::ostream& operator<<(std::ostream& stream,Virus ob)
 {
-  stream << "id: " << ((_Virus*)ob.ptr)->id  <<'\n';
-  stream << "x: " << ((_Virus*)ob.ptr)->x  <<'\n';
-  stream << "y: " << ((_Virus*)ob.ptr)->y  <<'\n';
-  stream << "owner: " << ((_Virus*)ob.ptr)->owner  <<'\n';
-  stream << "level: " << ((_Virus*)ob.ptr)->level  <<'\n';
-  stream << "movesLeft: " << ((_Virus*)ob.ptr)->movesLeft  <<'\n';
-  stream << "living: " << ((_Virus*)ob.ptr)->living  <<'\n';
+  stream << "[Virus" 
+         << " id(" << ((_Virus*)ob.ptr)->id  << ')'
+         << " (" << ((_Virus*)ob.ptr)->x  << ',' << ((_Virus*)ob.ptr)->y << ')'
+         << " owner(" << ((_Virus*)ob.ptr)->owner  << ')'
+         << " Lvl( " << ((_Virus*)ob.ptr)->level  << ')'
+         << " movesLeft(" << ((_Virus*)ob.ptr)->movesLeft  << ')'
+         << " living(" << ((_Virus*)ob.ptr)->living  << ')'
+         << "]"
+    ;
   return stream;
 }
