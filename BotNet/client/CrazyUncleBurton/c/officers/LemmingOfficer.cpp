@@ -62,7 +62,7 @@ bool LemmingOfficer::advance() {
     Virus* v = _ai->locateVirus(*u);
     if (v) {
       Point move = go(Point(v->x(),v->y()),_marchDir);
-      if (_ai->map.legal(move.x,move.y)) {
+      if (_ai->_map.legal(move.x,move.y)) {
         CLEAR_DEBUG_STREAM;
         _DS("Order "<<Point(v->x(),v->y())<<" -> "<<move<<" for "<<*v);
         NotifySuperiors(DEBUG_STRING);

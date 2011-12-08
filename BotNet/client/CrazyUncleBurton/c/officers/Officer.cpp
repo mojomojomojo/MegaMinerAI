@@ -96,7 +96,7 @@ bool Officer::requisitionUnit( int level, Base base, Officer *requisitioner ) {
   }
 
   // Ensure the spawn will succeed.
-  if (baseCanSpawn(base,_ai->map) && _ai->canAffordVirus(_minLvl)) {
+  if (baseCanSpawn(base,_ai->_map) && _ai->canAffordVirus(_minLvl)) {
     _NotifySuperiors("Requisitioning a level "<<level<<" virus for "
                      <<requisitioner->_ofcname<<"."<<requisitioner->_id
                      <<" at "<<base);
@@ -141,7 +141,7 @@ bool Officer::spawnMore() {
     for (vector<Base>::iterator base = randomBase.begin();
          base != randomBase.end();
          base++) {
-      if (baseCanSpawn(*base,_ai->map)) {
+      if (baseCanSpawn(*base,_ai->_map)) {
         spawnsRemain = true;
         requisitionUnit(_minLvl,(*base),this);
       } else {
@@ -326,6 +326,56 @@ bool Officer::baseCanSpawn( Base& b, const Map& map ) {
 ostream& operator<<(ostream& stream, const Officer& o) {
   stream << "[Officer '"<<o._ofcname<<"."<<o._id<<"]";
 }
+
+  // Get a list of all units that can be conscripted by a higher-precedence
+  //   duty's CO.
+  // tail-recursive ('list' is an output parameter)
+  // Each recipient should find all lower priority groups and list all the
+  //   units employed by each. (No duplicates should be allowed.)
+  // If requester_co is null, assume it's the same as the requester.
+void Officer::getConscriptList( Officer* requester,
+                                vector<int> &list,
+                                Officer *requester_co
+                                ) {
+  if (!requester_co) requester_co = requester;
+
+  // Have my commander check all his subordinate officers whose tasks
+  //   are a lower priority than mine.
+  if (requester_co != this) {
+    // find all lower-precedence jobs (than the requester_co) and
+    //   have them list all available conscripts.
+
+    bool found_requester_co = false;
+    for (vector<Officer*>::iterator sub = _subordinates.begin();
+         sub != _subordinates.end();
+         sub++) {
+      if (!found_requester_co && *sub == requester_co) {
+        found_requester_co = true;
+        continue;
+      } else if (found_requester_co) {
+        (*sub)->listAvailableConscripts(list);
+      }
+    }
+  } else {
+    // If I'm calling this on myself.
+    for (vector<Officer*>::iterator sub = _subordinates.begin();
+         sub != _subordinates.end();
+         sub++) {
+      (*sub)->listAvailableConscripts(list);
+    }
+  }
+
+  // No commander (i.e. I am the Chief Commander): recursion ends.
+  if (_commander == NULL) return;
+
+  // Pass it up the chain of command.
+  _commander->getConscriptList(requester,list,this);
+ 
+}
+
+void Officer::listAvailableConscripts( vector<int>& roster ) {
+}
+
 
 
 #ifdef _DEBUG_OFFICER

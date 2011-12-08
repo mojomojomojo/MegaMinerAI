@@ -40,9 +40,11 @@ public:
 
  protected:
   std::map<int,int> _searchInfo; // virusid_t => search_orient/search_dir
-  int[8] _searchDist; // internal - used to keep track of the number of
+  int _searchDist[8]; // internal - used to keep track of the number of
                       //   units assigned to that search dir/orient.
 
+
+  static string asText( Map &m, Path& p, PathTrack **tracking );
   
 };
 

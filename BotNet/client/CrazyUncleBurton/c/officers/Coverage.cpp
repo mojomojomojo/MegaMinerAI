@@ -1,4 +1,5 @@
 #include "Coverage.h"
+#include <string>
 
 using namespace std;
 
@@ -40,7 +41,7 @@ bool CoverageOfficer::impassable( MAPCODE c ) {
 Path* CoverageOfficer::pathToNearestTarget(
     Map map, Point start,
     vector<MAPCODE>& acceptPri, // prioritized
-    int cDir, int oDir,
+    int cDir, int aDir
 ) {
   // This is Djikstra's algorithm.
 
@@ -103,10 +104,10 @@ Path* CoverageOfficer::pathToNearestTarget(
     curr = queue[0];
 
     if (!best.bad() && 
-        parallelMap[best->x][best->y].dist < parallelMap[curr.x][curr.y].dist) {
+        parallelMap[best.x][best.y].dist < parallelMap[curr.x][curr.y].dist) {
       // Stop looking.
       _NotifySubordinates("All distances are greater than the best: ("
-                          <<parallelMap[best->x][best->y].dist<<") "<<best);
+                          <<parallelMap[best.x][best.y].dist<<") "<<best);
       break;
     }
 
@@ -156,7 +157,7 @@ Path* CoverageOfficer::pathToNearestTarget(
 
       if (nextP.bad()) continue; // skip edges.
       MAPCODE nextC = map.at(nextP.x,nextP.y);
-      if (impassable(nextC,AS_IgnoreViruses)) {
+      if (impassable(nextC)) {
         //cout << "IMPASSABLE! " << nextP << endl;
         continue;
       } // skip impassable moves
@@ -165,7 +166,7 @@ Path* CoverageOfficer::pathToNearestTarget(
       PathTrack *nextPT = &(parallelMap[nextP.x][nextP.y]);
       if (nextPT->visited) continue;
       EdgeCost nextD = currPT->dist + 1;
-      //cout << "   Look: " << nextP << "(" << nextC << ") D(" << nextD << ") " << *nextPT << endl;
+      _TakeNotes("   Look: " << nextP << "(" << nextC << ") D(" << nextD << ") " << *nextPT);
       if (nextPT->dist > nextD) {
         nextPT->dist = nextD;
         nextPT->prev = curr;
@@ -188,7 +189,7 @@ Path* CoverageOfficer::pathToNearestTarget(
   // build it
   Path* retpath = new Path;
   retpath->start = start;
-  retpath->end = *best;
+  retpath->end = best;
   Point p = curr;
   while (p != start) {
     retpath->nodes.insert(retpath->nodes.begin(),p);
@@ -197,7 +198,61 @@ Path* CoverageOfficer::pathToNearestTarget(
   }
   retpath->nodes.insert(retpath->nodes.begin(),start);
 
-  //cout << endl << asText(map,*retpath,parallelMap) << endl << endl;
+  _TakeNotes(endl << asText(map,*retpath,parallelMap) << endl << endl);
   
   return retpath;
+}
+
+
+string CoverageOfficer::asText( Map &m, Path& p, PathTrack **tracking ) {
+  stringstream sout(stringstream::out);
+  
+  for (int y=0; y<m.height(); y++) {
+    for (int x=0; x<m.width(); x++) {
+      MAPCODE c = m.m_grid[x][y];
+      if (c == WALL) {
+        sout << "#";
+        continue;
+      }
+
+      Point here(x,y);
+      if (here == p.start) {
+        sout << "@";
+        continue;
+      } else if (here == p.end) {
+        sout << "X";
+        continue;
+      }
+
+      if (p.nodes.size()) {
+        bool inPath = false;
+        for (vector<Point>::iterator pt = p.nodes.begin()+1;
+             pt != p.nodes.end();
+             pt++) {
+          if (pt+1 == p.nodes.end()) continue;
+          if (*pt == here) {
+            sout << "+";
+            inPath = true;
+            break;
+          }
+        }
+        if (inPath) continue;
+      }
+
+      if (tracking) {
+        if (tracking[x][y].visited) {
+          sout << "*";
+          continue;
+        } else if (tracking[x][y].queued) {
+          sout << "o";
+          continue;
+        }
+      }
+
+      sout << ".";
+    }
+    sout << endl;
+  }
+
+  return sout.str();
 }

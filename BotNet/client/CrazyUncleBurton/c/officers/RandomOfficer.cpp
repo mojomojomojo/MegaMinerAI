@@ -79,8 +79,8 @@ bool RandomOfficer::advance()
              (x >= 0 && x<_ai->width()) &&
              (y >= 0 && y<_ai->height()) &&
              (_ai->getTileAtLocation(x,y).owner() != 3) &&
-             (_ai->map.at(x,y) != OPBASE) &&
-             (_ai->map.at(x,y) != MYBASE)
+             (_ai->_map.at(x,y) != OPBASE) &&
+             (_ai->_map.at(x,y) != MYBASE)
              )
            ) {
       if (tries++ > rand_limit) break;

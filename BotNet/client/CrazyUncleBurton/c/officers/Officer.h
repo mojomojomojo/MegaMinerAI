@@ -94,6 +94,17 @@ class Officer {
 
   friend ostream& operator<<(ostream& stream, const Officer& o);
 
+  // Get a list of all units that can be conscripted by a higher-precedence
+  //   duty's CO.
+  // tail-recursive ('list' is an output parameter)
+  // Each recipient should find all lower priority groups and list all the
+  //   units employed by each. (No duplicates should be allowed.)
+  // If requester_co is null, assume it's the same as the requester.
+  virtual void getConscriptList( Officer* requester,
+                                 vector<int> &list,
+                                 Officer *requester_co = NULL );
+  virtual void listAvailableConscripts( vector<int>& roster );
+
  protected:
   vector<Officer*> _subordinates;
   map<int,Officer*> _requisitions;
