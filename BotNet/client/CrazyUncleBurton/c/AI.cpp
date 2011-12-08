@@ -4,6 +4,7 @@
 #include "Officer.h"
 #include "RandomOfficer.h"
 #include "LemmingOfficer.h"
+#include "Coverage.h"
 #include "shell.h"
 #include "rrbase.h"
 
@@ -22,9 +23,20 @@ const char* AI::password()
 Officer Commander_Washington;
 RandomOfficer LtRand;
 LemmingOfficer ColRight,ColUp;
+CoverageOfficer SgtCover;
 
 //This function is run once, before your first turn.
 void AI::init(){
+  cout << "Init..." << endl;
+
+  // Check environment and cmdline for run-time options.
+  for (int i=1; i<_config_argc; i++) {
+    if (string("-cover").compare(_config_argv[i])==0) {
+      _config[string("preset")] = string("Coverage");
+    }
+  }
+
+
   cout << "AI Started" << endl;
   cout << "Base Cost: " << baseCost() << ", Scale: " << scaleCost() << endl;
 
@@ -34,38 +46,49 @@ void AI::init(){
   Commander_Washington.setOfficerName("Gen.Wash");
   Commander_Washington.PressRelease("Good afternoon, gentlemen.");
 
-  ColRight.LogLevel(10);
-  ColRight.marchDir(East);
-  ColRight.unitsWanted(2);
-  ColRight.minLevel(1);
-  ColRight.setOfficerName(string("Col.Right"));
-  Commander_Washington.addSubordinate(&ColRight);
-  ColRight.PressRelease("Col. Right, reporting for duty.");
+  if (_config[string("preset")].compare(string("Coverage"))) {
+    SgtCover.LogLevel(10);
+    SgtCover.minLevel(0);
+    SgtCover.unitsWanted(25);
+    SgtCover.setOfficerName(string("Sgt.Cover"));
+    Commander_Washington.addSubordinate(&SgtCover);
+    SgtCover.PressRelease("Sgt. Cover, reporting for duty.");
+  } else {
+    ColRight.LogLevel(10);
+    ColRight.marchDir(East);
+    ColRight.unitsWanted(2);
+    ColRight.minLevel(1);
+    ColRight.setOfficerName(string("Col.Right"));
+    Commander_Washington.addSubordinate(&ColRight);
+    ColRight.PressRelease("Col. Right, reporting for duty.");
 
-  ColUp.LogLevel(10);
-  ColUp.marchDir(North);
-  ColUp.unitsWanted(2);
-  ColUp.minLevel(0);
-  ColUp.setOfficerName(string("Col.Up"));
-  Commander_Washington.addSubordinate(&ColUp);
-  ColUp.PressRelease("Col. Up, reporting for duty.");
+    ColUp.LogLevel(10);
+    ColUp.marchDir(North);
+    ColUp.unitsWanted(2);
+    ColUp.minLevel(0);
+    ColUp.setOfficerName(string("Col.Up"));
+    Commander_Washington.addSubordinate(&ColUp);
+    ColUp.PressRelease("Col. Up, reporting for duty.");
 
-  LtRand.LogLevel(10);
-  LtRand.unitsWanted(0x7FFF); // the rest of the troops
-  LtRand.minLevel(0);
-  LtRand.setOfficerName("Lt.Rand");
-  Commander_Washington.addSubordinate(&LtRand);
-  LtRand.PressRelease("Lt. Random, reporting for duty.");
+    LtRand.LogLevel(10);
+    LtRand.unitsWanted(0x7FFF); // the rest of the troops
+    LtRand.minLevel(0);
+    LtRand.setOfficerName("Lt.Rand");
+    Commander_Washington.addSubordinate(&LtRand);
+    LtRand.PressRelease("Lt. Random, reporting for duty.");
+  }
+
+  Commander_Washington.PressRelease("\nAll officers reporting.");
 }
 
 //This function is called each time it is your turn.
 //Return true to end your turn, return false to ask the server for updated information.
 bool AI::run()
 {
-  players[playerID()].talk((char*)"The General: 0.51 (2xLem,1Rand)");
+  cout << "Turn " << turnNumber() << endl;
 
   // Future: tell the map to update itself (saving history)
-  map = Map(this);
+  _map = Map(this);
 
   // Update convenience data structures.
   myBases.erase(myBases.begin(),myBases.end());
@@ -80,6 +103,14 @@ bool AI::run()
        virus++) {
     if ((*virus).owner() == playerID()) myViruses.push_back(*virus);
   }
+
+
+  if (_config[string("preset")].compare(string("Coverage"))) {
+    players[playerID()].talk((char*)"The General: 0.52 (Coverage)");
+  } else {
+    players[playerID()].talk((char*)"The General: 0.52 (2xLem,1Rand)");
+  }
+
 
   // Let the General command the army.
   Commander_Washington.Command();

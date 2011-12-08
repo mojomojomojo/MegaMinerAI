@@ -136,3 +136,14 @@ bool BaseAI::startTurn()
 
 BaseAI::BaseAI(Connection* conn) : c(conn) {}
 BaseAI::~BaseAI() {}
+
+
+// TWH
+void BaseAI::configure( int argc, char** argv, char** env) {
+  _config_argc = argc;
+  _config_argv = argv;
+  _config_env = env;
+
+  // Check for any configuration (i.e. run-time) data.
+}
+// TWH

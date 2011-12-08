@@ -5,6 +5,8 @@
 #define BASEAI_H
 
 #include <vector>
+#include <string>
+#include <map>
 #include <ctime>
 #include "game.h"
 
@@ -31,9 +33,16 @@ public:
   std::vector<Tile> tiles;
   std::vector<Virus> viruses;
 
-  Map map;
+  Map _map;
   std::vector<Virus> myViruses;
   std::vector<Base> myBases;
+
+  std::map<string,string> _config;
+  int _config_argc;
+  char** _config_argv;
+  char** _config_env;
+
+  void configure( int argc, char** argv, char** env);
 
 public:
   ///How many turns it has been since the beginning of the game
