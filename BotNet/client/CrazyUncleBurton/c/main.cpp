@@ -41,7 +41,7 @@ int main(int argc, char** argv, char** env)
   // Support the stardard interface: <exe> <host> [<game_number>]
   if (noflag_args >= 1) server_name = argv[1];
   cout << "  Server: " << server_name << endl;
-  if (noflag_args >= 2 && gameNumber != -1) {
+  if (noflag_args >= 2 && gameNumber == -1) {
     cout << "  Joining Game Number: ";
     gameNumber = atoi(argv[2]);
     cout << gameNumber << endl;
@@ -74,7 +74,7 @@ int main(int argc, char** argv, char** env)
   }
   else
   {
-    if(!joinGame(c, atoi(argv[2])))
+    if(!joinGame(c, gameNumber))
     {
       cerr << "Error joining game." << endl;
       return 1;
