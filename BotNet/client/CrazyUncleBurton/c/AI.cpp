@@ -4,7 +4,7 @@
 #include "Officer.h"
 #include "RandomOfficer.h"
 #include "LemmingOfficer.h"
-#include "Coverage.h"
+#include "CoverageOfficer.h"
 #include "shell.h"
 #include "rrbase.h"
 
@@ -46,14 +46,19 @@ void AI::init(){
   Commander_Washington.setOfficerName("Gen.Wash");
   Commander_Washington.PressRelease("Good afternoon, gentlemen.");
 
-  if (_config[string("preset")].compare(string("Coverage"))) {
+  if (_config[string("preset")].compare(string("Coverage")) == 0) {
+    Commander_Washington.NotifySuperiors("Operation TARP.");
+
     SgtCover.LogLevel(10);
     SgtCover.minLevel(0);
     SgtCover.unitsWanted(25);
     SgtCover.setOfficerName(string("Sgt.Cover"));
     Commander_Washington.addSubordinate(&SgtCover);
     SgtCover.PressRelease("Sgt. Cover, reporting for duty.");
+
   } else {
+    Commander_Washington.NotifySuperiors("Adopting default strategy.");
+
     ColRight.LogLevel(10);
     ColRight.marchDir(East);
     ColRight.unitsWanted(2);
